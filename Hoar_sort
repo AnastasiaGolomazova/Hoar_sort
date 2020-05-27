@@ -1,0 +1,92 @@
+#include <iostream>
+#include <time.h>
+using namespace std;
+
+int* CreateArray(int size, int minRange, int maxRange) {
+	if (size <= 0) { // проработка исключений, если размер <= 0
+		throw 0;
+
+	}
+
+	int* Array = new int[size]; // создали массив размером size
+	for (int i = 0; i < size; i++) {
+		Array[i] = minRange + rand() % (maxRange - minRange); // заполнили массив нужным нам диапозоном
+	}
+	return Array;
+}
+
+void PrintArray(int* Array, int size) { // функция вывода
+	int i;
+	for (i = 0; i < size - 1; ++i)
+		cout << Array[i] << " ";
+	cout << Array[i] << endl;
+}
+
+
+void Hoar_sort(int* a, int l, int r) {
+	if (l >= r) // 1. Если l >= r,
+		return; // то выход.
+	int i = l, j = r, x = a[(l + r) / 2]; // 2. Установка i = l, j = r, x = a[(l+r)/2]
+	while (i <= j) { // 3. Пока i ≤ j
+		while (a[i] < x) // 3.1. Пока a[i] < x
+			++i; // увеличиваем i на 1.увеличиваем i на 1.
+		while (a[j] > x) // 3.2 Пока a[j] > x
+			--j; // уменьшаем j на 1.
+		if (i <= j) { // 3.3 Если i ≤ j,
+			swap(a[i], a[j]); // то a[i] ↔ a[j]
+			++i; // и увеличиваем i на 1,
+			--j; // и уменьшаем j на единицу.
+		}
+	}
+	Hoar_sort(a, l, j); // 4. Выполняем эту же процедуру для фрагмента от l до j.
+	Hoar_sort(a, i, r); // 5. Выполняем эту же процедуру для фрагмента от i до r.
+}
+
+
+bool CheckArray(int *Array, int size) { // функция проверки, отсортирован ли массив
+	bool ok = true;
+	if (Array != NULL) {
+
+		for (int i = 0; i < size - 1; ++i)
+			if (Array[i] > Array[i + 1])
+				return false;
+
+		return true;
+	}
+}
+
+int main() {
+	setlocale(LC_ALL, "Russian");
+	srand(time(NULL));
+	int size;// размер массива
+	int *Array = NULL;
+	cout << "size = ";
+
+	try
+	{
+		cin >> size;
+		Array = CreateArray(size, 0, 1000);
+		PrintArray(Array, size);
+		Hoar_sort(Array, 0, size - 1);
+		PrintArray(Array, size);
+
+		if (!CheckArray(Array, size))
+			cout << "Массив не отсортирован" << endl;
+		else
+			cout << "Массив отсортирован" << endl;
+
+	}
+	catch (int i)
+	{
+		switch (i)
+		{
+		case 0:
+			cout << "Размер недопустимых значений" << endl;
+		}
+	}
+	delete Array;
+
+
+	system("pause");
+	return 0;
+}
